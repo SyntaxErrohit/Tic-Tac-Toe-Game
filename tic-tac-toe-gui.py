@@ -54,10 +54,8 @@ def minimax(state):
 def draw_board():
     game_display.fill(green)
     for i in range(1, 3):
-        pygame.draw.line(game_display, dark_green,
-                         (0, i * 100), (300, i * 100), 5)
-        pygame.draw.line(game_display, dark_green,
-                         (i * 100, 0), (i * 100, 300), 5)
+        pygame.draw.line(game_display, dark_green, (0, i * 100), (300, i * 100), 5)
+        pygame.draw.line(game_display, dark_green, (i * 100, 0), (i * 100, 300), 5)
     for i in range(3):
         for j in range(3):
             color = (84, 84, 84) if board[i][j] == "X" else (242, 235, 211)
@@ -108,8 +106,7 @@ while True:
             # Make the decision
             if board[row][col] == '':
                 board[row][col] = 'X'
-                free_space = [(i, j) for j in range(3)
-                              for i in range(3) if board[i][j] == '']
+                free_space = [(i, j) for j in range(3) for i in range(3) if board[i][j] == '']
                 if free_space != []:
                     posi, posj = bestMove(free_space)
                     board[posi][posj] = 'O'
