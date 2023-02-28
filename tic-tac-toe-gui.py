@@ -15,6 +15,10 @@ board = [['', '', ''], ['', '', ''], ['', '', '']]
 green = (20, 189, 172)
 dark_green = (13, 161, 146)
 black = (0, 0, 0)
+choose_color = lambda p: (84, 84, 84) if p == "X" else (242, 235, 211)
+
+# Reducing function
+draw_line = lambda a, b, c, d: pygame.draw.line(game_display, a, b, c, d)
 
 # Define the font
 font = pygame.font.SysFont(None, 100)
@@ -54,12 +58,11 @@ def minimax(state):
 def draw_board():
     game_display.fill(green)
     for i in range(1, 3):
-        pygame.draw.line(game_display, dark_green, (0, i * 100), (300, i * 100), 5)
-        pygame.draw.line(game_display, dark_green, (i * 100, 0), (i * 100, 300), 5)
+        draw_line(dark_green, (0, i * 100), (300, i * 100), 5)
+        draw_line(dark_green, (i * 100, 0), (i * 100, 300), 5)
     for i in range(3):
         for j in range(3):
-            color = (84, 84, 84) if board[i][j] == "X" else (242, 235, 211)
-            text = font.render(board[i][j], True, color)
+            text = font.render(board[i][j], True, choose_color(board[i][j]))
             text_rect = text.get_rect()
             text_rect.center = (j * 100 + 50, i * 100 + 50)
             game_display.blit(text, text_rect)
@@ -83,10 +86,10 @@ def check():
 # Initiate the board
 for w in range(1, 301, 10):
     game_display.fill(green)
-    pygame.draw.line(game_display, dark_green, (0, 100), (w, 100), 5)
-    pygame.draw.line(game_display, dark_green, (300-w, 200), (300, 200), 5)
-    pygame.draw.line(game_display, dark_green, (100, 0), (100, w), 5)
-    pygame.draw.line(game_display, dark_green, (200, 300-w), (200, 300), 5)
+    draw_line(dark_green, (0, 100), (w, 100), 5)
+    draw_line(dark_green, (300-w, 200), (300, 200), 5)
+    draw_line(dark_green, (100, 0), (100, w), 5)
+    draw_line(dark_green, (200, 300-w), (200, 300), 5)
     pygame.display.update()
     pygame.time.delay(20)
 
@@ -120,19 +123,16 @@ while True:
 
             # Draw strike line
             dir, pos = result[1]
+            color = choose_color(result[0])
             for w in range(30, 270):
                 if dir == "i":
-                    color = (84, 84, 84) if board[pos][0] == "X" else (242, 235, 211)
-                    pygame.draw.line(game_display, color, (30, pos*100 + 50), (w, pos*100 + 50), 10)
+                    draw_line(color, (30, pos*100 + 50), (w, pos*100 + 50), 10)
                 if dir == "j":
-                    color = (84, 84, 84) if board[0][pos] == "X" else (242, 235, 211)
-                    pygame.draw.line(game_display, color, (pos*100 + 50, 30), (pos*100 + 50, w), 10)
+                    draw_line(color, (pos*100 + 50, 30), (pos*100 + 50, w), 10)
                 if dir == "i-j":
-                    color = (84, 84, 84) if board[1][1] == "X" else (242, 235, 211)
-                    pygame.draw.line(game_display, color, (30, 30), (w, w), 10)
+                    draw_line(color, (30, 30), (w, w), 10)
                 if dir == "i+j":
-                    color = (84, 84, 84) if board[1][1] == "X" else (242, 235, 211)
-                    pygame.draw.line(game_display, color, (270, 30), (300-w, w), 10)
+                    draw_line(color, (270, 30), (300-w, w), 10)
                 pygame.display.update()
                 pygame.time.delay(5)
 
