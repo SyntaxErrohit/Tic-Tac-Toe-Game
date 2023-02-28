@@ -1,4 +1,3 @@
-import random
 import pygame
 
 pygame.init()
@@ -9,7 +8,7 @@ game_display = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption("Tic Tac Toe")
 
 # Define the board
-board = [['', '', ''], ['', '', ''], ['', '', '']]
+board = [['']*3, ['']*3, ['']*3]
 
 # Define the colors
 green = (20, 189, 172)
@@ -38,13 +37,13 @@ def bestMove(spaces: list[(int, int)]) -> tuple[int, int]:
 def minimax(state: bool) -> int:
     for i in range(3):
         if board[i][0] == board[i][1] == board[i][2] != "":
-            return {"X":-1, "O":1}[board[i][1]]
+            return {"X":-1, "": 0, "O":1}[board[i][1]]
         if board[0][i] == board[1][i] == board[2][i] != "":
-            return {"X":-1, "O":1}[board[i][1]]
+            return {"X":-1, "": 0, "O":1}[board[i][1]]
     if board[0][0] == board[1][1] == board[2][2] != "":
-        return {"X":-1, "O":1}[board[1][1]]
+        return {"X":-1, "": 0, "O":1}[board[1][1]]
     if board[0][2] == board[1][1] == board[2][0] != "":
-        return {"X":-1, "O":1}[board[1][1]]
+        return {"X":-1, "": 0, "O":1}[board[1][1]]
     free_space = sum(board[i][j] == '' for j in range(3) for i in range(3))
     if free_space == 0:
         return 0
@@ -149,7 +148,7 @@ while True:
 
             # Fill screen with text "DRAW"
             pygame.display.update()
-            pygame.time.delay(2000)
+            pygame.time.delay(1000)
             game_display.fill(green)
             draw_text = font.render("DRAW", True, black)
             draw_text_rect = draw_text.get_rect()
