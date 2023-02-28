@@ -22,7 +22,7 @@ draw_line = lambda a, b: pygame.draw.line(game_display, (13, 161, 146), a, b, 5)
 font = pygame.font.SysFont(None, 100)
 
 # Position decided by bot
-def bestMove(spaces: list[(int, int)]) -> tuple[int, int]:
+def bestMove(spaces: list[tuple[int, int]]) -> tuple[int, int]:
     bestVal, x, y = -float("inf"), 0, 0
     for i, j in spaces:
         board[i][j] = "O"
@@ -36,15 +36,14 @@ def bestMove(spaces: list[(int, int)]) -> tuple[int, int]:
 def minimax(state: bool) -> int:
     for i in range(3):
         if board[i][0] == board[i][1] == board[i][2] != "":
-            return {"X":-1, "": 0, "O":1}[board[i][1]]
+            return {"X":-1, "O":1}[board[i][1]]
         if board[0][i] == board[1][i] == board[2][i] != "":
-            return {"X":-1, "": 0, "O":1}[board[i][1]]
+            return {"X":-1, "O":1}[board[1][i]]
     if board[0][0] == board[1][1] == board[2][2] != "":
-        return {"X":-1, "": 0, "O":1}[board[1][1]]
+        return {"X":-1, "O":1}[board[1][1]]
     if board[0][2] == board[1][1] == board[2][0] != "":
-        return {"X":-1, "": 0, "O":1}[board[1][1]]
-    free_space = sum(board[i][j] == '' for j in range(3) for i in range(3))
-    if free_space == 0:
+        return {"X":-1, "O":1}[board[1][1]]
+    if sum(board[i][j] == '' for j in range(3) for i in range(3)) == 0:
         return 0
     bestVal = (float("inf"), -float("inf"))[state]
     for i in range(3):
