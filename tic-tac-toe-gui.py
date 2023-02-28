@@ -13,18 +13,17 @@ board = [['', '', ''], ['', '', ''], ['', '', '']]
 
 # Define the colors
 green = (20, 189, 172)
-dark_green = (13, 161, 146)
 black = (0, 0, 0)
 choose_color = lambda p: (84, 84, 84) if p == "X" else (242, 235, 211)
 
 # Reducing function
-draw_line = lambda a, b, c, d: pygame.draw.line(game_display, a, b, c, d)
+draw_line = lambda a, b: pygame.draw.line(game_display, (13, 161, 146), a, b, 5)
 
 # Define the font
 font = pygame.font.SysFont(None, 100)
 
 # Position decided by bot
-def bestMove(spaces):
+def bestMove(spaces: list[(int, int)]) -> tuple[int, int]:
     bestVal, x, y = -float("inf"), 0, 0
     for i, j in spaces:
         board[i][j] = "O"
@@ -36,10 +35,19 @@ def bestMove(spaces):
 
 
 # Minimax algorithm
-def minimax(state):
-    result = check()
-    if result[0] != "NA":
-        return result[0]
+def minimax(state: bool) -> int:
+    for i in range(3):
+        if board[i][0] == board[i][1] == board[i][2] != "":
+            return {"X":-1, "O":1}[board[i][1]]
+        if board[0][i] == board[1][i] == board[2][i] != "":
+            return {"X":-1, "O":1}[board[i][1]]
+    if board[0][0] == board[1][1] == board[2][2] != "":
+        return {"X":-1, "O":1}[board[1][1]]
+    if board[0][2] == board[1][1] == board[2][0] != "":
+        return {"X":-1, "O":1}[board[1][1]]
+    free_space = sum(board[i][j] == '' for j in range(3) for i in range(3))
+    if free_space == 0:
+        return 0
     bestVal = (float("inf"), -float("inf"))[state]
     for i in range(3):
         for j in range(3):
@@ -58,8 +66,8 @@ def minimax(state):
 def draw_board():
     game_display.fill(green)
     for i in range(1, 3):
-        draw_line(dark_green, (0, i * 100), (300, i * 100), 5)
-        draw_line(dark_green, (i * 100, 0), (i * 100, 300), 5)
+        draw_line((0, i * 100), (300, i * 100))
+        draw_line((i * 100, 0), (i * 100, 300))
     for i in range(3):
         for j in range(3):
             text = font.render(board[i][j], True, choose_color(board[i][j]))
@@ -69,29 +77,29 @@ def draw_board():
 
 
 # Check for any wins
-def check():
+def check() -> tuple[int, str, str]:
     for i in range(3):
         if board[i][0] == board[i][1] == board[i][2] != "":
-            return [-1, 1][board[i][1] == 'O'], ("i", i)
+            return (i, "i", board[i][1])
         if board[0][i] == board[1][i] == board[2][i] != "":
-            return [-1, 1][board[1][i] == 'O'], ("j", i)
+            return (i, "j", board[1][i])
     if board[0][0] == board[1][1] == board[2][2] != "":
-        return [-1, 1][board[1][1] == 'O'], ("i-j", 0)
+        return (0, "i-j", board[1][1])
     if board[0][2] == board[1][1] == board[2][0] != "":
-        return [-1, 1][board[1][1] == 'O'], ("i+j", 0)
+        return (0, "i+j", board[1][1])
     free_space = sum(board[i][j] == '' for j in range(3) for i in range(3))
-    return ("NA", 0) if free_space != 0 else (0, 0)
+    return (0, "i", "NA") if free_space != 0 else (0, "i", "draw")
 
 
 # Initiate the board
 for w in range(1, 301, 10):
     game_display.fill(green)
-    draw_line(dark_green, (0, 100), (w, 100), 5)
-    draw_line(dark_green, (300-w, 200), (300, 200), 5)
-    draw_line(dark_green, (100, 0), (100, w), 5)
-    draw_line(dark_green, (200, 300-w), (200, 300), 5)
+    draw_line((0, 100), (w, 100))
+    draw_line((300-w, 200), (300, 200))
+    draw_line((100, 0), (100, w))
+    draw_line((200, 300-w), (200, 300))
     pygame.display.update()
-    pygame.time.delay(20)
+    pygame.time.delay(10)
 
 
 # Main game loop
@@ -117,24 +125,25 @@ while True:
     # Draw the board
     draw_board()
 
-    result = check()
-    if result != ("NA", 0):
-        if result[0] != 0:
+    # Update the display
+    pygame.display.update()
+
+    pos, dir, winner = check()
+    if winner != "NA":
+        if winner != "draw":
 
             # Draw strike line
-            dir, pos = result[1]
-            color = choose_color(result[0])
-            for w in range(30, 270):
+            for w in range(10, 291):
                 if dir == "i":
-                    draw_line(color, (30, pos*100 + 50), (w, pos*100 + 50), 10)
+                    draw_line((10, pos*100 + 50), (w, pos*100 + 50))
                 if dir == "j":
-                    draw_line(color, (pos*100 + 50, 30), (pos*100 + 50, w), 10)
+                    draw_line((pos*100 + 50, 10), (pos*100 + 50, w))
                 if dir == "i-j":
-                    draw_line(color, (30, 30), (w, w), 10)
+                    draw_line((10, 10), (w, w))
                 if dir == "i+j":
-                    draw_line(color, (270, 30), (300-w, w), 10)
+                    draw_line((290, 10), (300-w, w))
                 pygame.display.update()
-                pygame.time.delay(5)
+                pygame.time.delay(1)
 
         else:
 
@@ -153,5 +162,3 @@ while True:
         pygame.quit()
         quit()
 
-    # Update the display
-    pygame.display.update()
