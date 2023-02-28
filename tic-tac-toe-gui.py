@@ -32,7 +32,6 @@ def bestMove(spaces: list[(int, int)]) -> tuple[int, int]:
             bestVal, x, y = val, i, j
     return x, y
 
-
 # Minimax algorithm
 def minimax(state: bool) -> int:
     for i in range(3):
@@ -60,9 +59,8 @@ def minimax(state: bool) -> int:
                     bestVal = min(bestVal, val)
     return bestVal
 
-
 # Draw the board
-def draw_board():
+def draw_board() -> None:
     game_display.fill(green)
     for i in range(1, 3):
         draw_line((0, i * 100), (300, i * 100))
@@ -73,7 +71,6 @@ def draw_board():
             text_rect = text.get_rect()
             text_rect.center = (j * 100 + 50, i * 100 + 50)
             game_display.blit(text, text_rect)
-
 
 # Check for any wins
 def check() -> tuple[int, str, str]:
@@ -89,7 +86,6 @@ def check() -> tuple[int, str, str]:
     free_space = sum(board[i][j] == '' for j in range(3) for i in range(3))
     return (0, "i", "NA") if free_space != 0 else (0, "i", "draw")
 
-
 # Initiate the board
 for w in range(1, 301, 10):
     game_display.fill(green)
@@ -100,13 +96,13 @@ for w in range(1, 301, 10):
     pygame.display.update()
     pygame.time.delay(10)
 
-
 # Main game loop
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             quit()
+
         elif event.type == pygame.MOUSEBUTTONUP:
             # Get the position of the mouse click
             pos = pygame.mouse.get_pos()
@@ -123,28 +119,12 @@ while True:
 
     # Draw the board
     draw_board()
-
-    # Update the display
     pygame.display.update()
-
+    
+    # Check for winner
     pos, dir, winner = check()
     if winner != "NA":
-        if winner != "draw":
-
-            # Draw strike line
-            for w in range(10, 291):
-                if dir == "i":
-                    draw_line((10, pos*100 + 50), (w, pos*100 + 50))
-                if dir == "j":
-                    draw_line((pos*100 + 50, 10), (pos*100 + 50, w))
-                if dir == "i-j":
-                    draw_line((10, 10), (w, w))
-                if dir == "i+j":
-                    draw_line((290, 10), (300-w, w))
-                pygame.display.update()
-                pygame.time.delay(1)
-
-        else:
+        if winner == "draw":
 
             # Fill screen with text "DRAW"
             pygame.display.update()
@@ -154,6 +134,25 @@ while True:
             draw_text_rect = draw_text.get_rect()
             draw_text_rect.center = (150, 150)
             game_display.blit(draw_text, draw_text_rect)
+
+        else:
+
+            # Draw strike line
+            for w in range(10, 291):
+                if dir == "i":
+                    # Draw horizontally
+                    draw_line((10, pos*100 + 50), (w, pos*100 + 50))
+                if dir == "j":
+                    # Draw vertically
+                    draw_line((pos*100 + 50, 10), (pos*100 + 50, w))
+                if dir == "i-j":
+                    # Draw diagonally from top left
+                    draw_line((10, 10), (w, w))
+                if dir == "i+j":
+                    # Draw diagonally from top right
+                    draw_line((290, 10), (300-w, w))
+                pygame.display.update()
+                pygame.time.delay(1)
 
         # Keep the screen for 3 seconds
         pygame.display.update()
