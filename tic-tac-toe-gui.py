@@ -78,9 +78,8 @@ def check():
         return [-1, 1][board[1][1] == 'O'], ("i-j", 0)
     if board[0][2] == board[1][1] == board[2][0] != "":
         return [-1, 1][board[1][1] == 'O'], ("i+j", 0)
-    free_space = [(i, j) for j in range(3)
-                  for i in range(3) if board[i][j] == '']
-    return ("NA", 0) if free_space != [] else (0, 0)
+    free_space = sum(board[i][j] == '' for j in range(3) for i in range(3))
+    return ("NA", 0) if free_space != 0 else (0, 0)
 
 
 # Initiate the board
@@ -132,14 +131,11 @@ while True:
                     color = (84, 84, 84) if board[0][pos] == "X" else (242, 235, 211)
                     pygame.draw.line(game_display, color, (pos*100 + 50, 30), (pos*100 + 50, w), 10)
                 if dir == "i-j":
-                    color = (84, 84, 84) if board[1][1] == "X" else (
-                        242, 235, 211)
+                    color = (84, 84, 84) if board[1][1] == "X" else (242, 235, 211)
                     pygame.draw.line(game_display, color, (30, 30), (w, w), 10)
                 if dir == "i+j":
-                    color = (84, 84, 84) if board[1][1] == "X" else (
-                        242, 235, 211)
-                    pygame.draw.line(game_display, color,
-                                     (270, 30), (300-w, w), 10)
+                    color = (84, 84, 84) if board[1][1] == "X" else (242, 235, 211)
+                    pygame.draw.line(game_display, color, (270, 30), (300-w, w), 10)
                 pygame.display.update()
                 pygame.time.delay(5)
 
