@@ -1,11 +1,5 @@
 import pygame
-
 pygame.init()
-
-display_width = 300
-display_height = 300
-game_display = pygame.display.set_mode((display_width, display_height))
-pygame.display.set_caption("Tic Tac Toe")
 
 class Board:
     def __init__(self) -> None:
@@ -69,22 +63,21 @@ class Board:
                 self.board[posi][posj] = 'O'
                 self.free_space.remove((posi, posj))
 
-# Define the board
-board = Board()
 
-# Define the colors
+display_width = 300
+display_height = 300
+game_display = pygame.display.set_mode((display_width, display_height))
+pygame.display.set_caption("Tic Tac Toe")
+
+board = Board()
 green = (20, 189, 172)
 black = (0, 0, 0)
 choose_color = lambda p: (84, 84, 84) if p == "X" else (242, 235, 211)
 
-# Reducing function
 draw_line = lambda a, b: pygame.draw.line(game_display, (13, 161, 146), a, b, 5)
 
-# Define the font
 font = pygame.font.SysFont(None, 100)
 
-
-# Initiate the board
 for w in range(1, 301, 10):
     game_display.fill(green)
     draw_line((0, 100), (w, 100))
@@ -94,7 +87,6 @@ for w in range(1, 301, 10):
     pygame.display.update()
     pygame.time.delay(10)
 
-# Main game loop
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -102,23 +94,18 @@ while True:
             quit()
 
         elif event.type == pygame.MOUSEBUTTONUP:
-            # Get the position of the mouse click
             pos = pygame.mouse.get_pos()
             row = pos[1] // 100
             col = pos[0] // 100
             board.placeXO(row, col)
             
-
-    # Draw the board
     board.draw()
     pygame.display.update()
     
-    # Check for winner
     pos, dir, winner = board.check()
     if winner != "NA":
         if winner == "draw":
 
-            # Fill screen with text "DRAW"
             pygame.display.update()
             pygame.time.delay(1000)
             game_display.fill(green)
@@ -129,7 +116,6 @@ while True:
 
         else:
 
-            # Draw strike line
             for w in range(10, 291):
                 if dir == "i":
                     draw_line((10, pos*100 + 50), (w, pos*100 + 50))
@@ -142,7 +128,6 @@ while True:
                 pygame.display.update()
                 pygame.time.delay(1)
 
-        # Keep the screen for 3 seconds
         pygame.display.update()
         pygame.time.delay(2000)
         pygame.quit()
